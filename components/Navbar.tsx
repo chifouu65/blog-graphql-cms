@@ -1,6 +1,9 @@
 
 import React from 'react'
 import CustomLink from './CustomLink'
+import { useUser } from '@auth0/nextjs-auth0/client';
+import {FaUserCircle} from 'react-icons/fa'
+import UserDropDown from './UserDropDown';
 
 const links = [
     {
@@ -13,7 +16,9 @@ const links = [
     }
 ]
 
+
 function Navbar () {
+    const { user } = useUser();
     const [isMenuOpen, setIsMenuOpen] = React.useState(false)
 
     const toggleMenu = () => {
@@ -21,12 +26,11 @@ function Navbar () {
     }
 
     return (
-        <nav className="bg-white border-gray-200 px-2 sm:px-4 py-2.5 rounded">
+        <nav className="bg-white mb-4 border-b border-gray-200 px-2 sm:px-4 py-2.5 rounded">
             <div className="container flex flex-wrap items-center justify-between mx-auto">
-                <a href="https://flowbite.com/" className="flex items-center">
-                    <img src="https://flowbite.com/docs/images/logo.svg" className="h-6 mr-3 sm:h-9" alt="Flowbite Logo" />
-                    <span className="self-center text-xl font-semibold whitespace-nowrap ">Flowbite</span>
-                </a>
+                <CustomLink href="/" className="flex items-center">
+                    <span className="self-center text-xl font-semibold whitespace-nowrap ">Blog</span>
+                </CustomLink>
                 <button 
                 onClick={toggleMenu}
                 data-collapse-toggle="navbar-default" type="button" className="inline-flex items-center p-2 ml-3 text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 " aria-controls="navbar-default" aria-expanded="false">
@@ -49,10 +53,28 @@ function Navbar () {
                                 ))
                              }
                         </>
+                        {
+                            user ? (
+                                <li key="user">
+                                    <UserDropDown
+                                        user={user}
+                                    />
+                                </li>
+                            ) : (
+                                <li key="login">
+                                    <CustomLink
+                                        href="/api/auth/login"
+                                        className="block py-2 pl-3 pr-4 text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0"
+                                    >
+                                        Login
+                                    </CustomLink>
+                                </li>
+                            )
+                        }
                     </ul>
                 </div>
                 <div className={`
-                    ${isMenuOpen ? 'block w-full md:hidden' : 'hidden w-full md:hidden'}
+                    ${isMenuOpen ? 'absolute top-10 w-full md:hidden' : 'hidden w-full md:hidden'}
                 `} id="navbar-default">
                     <ul className="flex flex-col p-4 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 md:mt-0 md:text-sm md:font-medium md:border-0 md:bg-white">
                         <>
@@ -69,6 +91,34 @@ function Navbar () {
                                 ))
                              }
                         </>
+                        {
+                            user ? (
+                                <li key="user">
+                                    <CustomLink
+                                        href="/user"
+                                        className="flex items-center gap-1 py-2 pl-3 pr-4 text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0"
+                                    >
+                                        {
+                                            user.name ? (
+                                                <span>{user.name}</span>
+                                            ) : (
+                                                <span>{user.email?.split('@')}</span>
+                                            )
+                                        }
+                                        <FaUserCircle/>
+                                    </CustomLink>
+                                </li>
+                            ) : (
+                                <li key="login">
+                                    <CustomLink
+                                        href="/api/auth/login"
+                                        className="block py-2 pl-3 pr-4 text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0"
+                                    >
+                                        Login
+                                    </CustomLink>
+                                </li>
+                            )
+                        }
                     </ul>
                 </div>
             </div>

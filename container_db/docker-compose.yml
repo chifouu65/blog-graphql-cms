@@ -1,0 +1,22 @@
+version: "3.2"
+services:
+  db:
+    image: postgres
+    volumes:
+      - ./container_db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: password
+    ports:
+      - 5432:5432
+
+
+# for start docker-compose up 
+# for stop docker-compose down
+
+# for connect to db docker exec -it container_db psql -U postgres
+# for create db docker exec -it container_db createdb -U postgres mydb
+# for create table docker exec -it container_db psql -U postgres -d mydb -c "CREATE TABLE users (id serial PRIMARY KEY, name varchar(255) NOT NULL, email varchar(255) NOT NULL);"
+# for insert data docker exec -it container_db psql -U postgres -d mydb -c "INSERT INTO users (name, email) VALUES ('John', '
+
+# access to db from host
+# for connect to db psql -h localhost -p 5432 -U postgres

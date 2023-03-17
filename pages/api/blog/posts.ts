@@ -13,7 +13,6 @@ export default async( req: NextApiRequest,
     if (req.method === 'GET') {
         const posts = await prisma.post.findMany();
         res.status(200).json(posts as any);
-        
         //create a post
     } else if (req.method === 'POST') {
         console.log('POST');
@@ -27,7 +26,16 @@ export default async( req: NextApiRequest,
             },
         });
         res.status(200).json(post as any);
-    } 
+        //get a post by id
+    }  else if (req.method === 'ded') {
+        const post = await prisma.post.findUnique({
+            where: {
+                id: req.body.id,
+            },
+        });
+        res.status(200).json(post as any);
+        //update a post
+    }
 }
 
 

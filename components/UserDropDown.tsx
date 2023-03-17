@@ -36,20 +36,14 @@ const UserDropDown = ({ user }: UserDropDownProps) => {
                 isOpen && (
                     <>
                     <div className="z-30 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 absolute md:top-20 top-30">
-                        <div className="px-4 py-3 text-sm text-gray-900 dark:text-white">
+                        <div className="px-4 py-3 text-sm text-gray-900">
                             {
                                 user?.nickname
                             }
                         </div>
-                        <ul className="py-2 text-sm text-gray-700 dark:text-gray-200" >
+                        <ul className="py-2 text-sm text-gray-700" >
                             <li>
                                 <CustomLink href="/user" className="block px-4 py-2 hover:bg-gray-100 ">Dashboard</CustomLink>
-                            </li>
-                            <li>
-                                <a href="#" className="block px-4 py-2 hover:bg-gray-100">Settings</a>
-                            </li>
-                            <li>
-                                <a href="#" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Earnings</a>
                             </li>
                         </ul>
                         <div className="py-1">

@@ -1,90 +1,82 @@
 
-import { GetStaticPaths, GetStaticProps } from 'next'
-import { PrismaClient } from '@prisma/client'
-import Head from 'next/head'
+import useSWR from 'swr'
+import { useRouter } from 'next/router'
+import { useUser } from '@auth0/nextjs-auth0/client';
 
-type Blog = {
-    id: string
-    title: string
-    slug: string
-    content: string
-    author: string
-    createdAt: Date
-    updatedAt: Date
-}
+export default function Blog() {
 
-type Props = {
-    blog: Blog
-}
+    const router = useRouter()
+    const { user } = useUser();
+    const { slug } = router.query
+    const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
+    const { data, error } = useSWR(`/api/blog/${slug}`, fetcher)
 
-export default function Blog({ blog }: Props) {
-   
-    const { title, content, author } = blog
+    if (error) return <div>failed to load</div>
+    if (!data) return <div>loading...</div>
+
+    const checkUser = data.authorId === user?.sub;
+
+    const editBlog = () => {
+        router.push(`/blog/edit/${slug}`)
+    }
+
+    const deleteBlog = () => {
+    
+        const deleteBlog = async () => {
+            const res = await fetch(`/api/blog/delete`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ 
+                    idToDelete: data.id,
+                 }),
+
+            })
+            const json = await res.json()
+            if (!res.ok) throw Error(json.message)
+            router.push('/')
+        }
+        deleteBlog()
+    }
     return (
-        <>
-        <Head>
-            <title>{title}</title>
-            <meta name="description" content={content} />
-            <link rel="icon" href="/favicon.ico" />
-            <meta property="og:title" content={title} />
-            <meta property="og:image" content="/images/og-image.png" />
-        </Head>
-        <div className="container">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="col-span-1">
-                    <h1 className="text-4xl font-bold">{title}</h1>
-                    <p className="text-gray-500 font-bold">Author: 
-                        <span className="text-gray-700 font-normal"> {author}</span>
-                    </p>
-                </div>
-                <div className="col-span-1">
-                    <div className="prose">
-                        <div dangerouslySetInnerHTML={{ __html: 
-                            content
-                        }} />
-                    </div>
-                </div>
-            </div>
+     <div className="container">
+      
+        <div className="flex flex-col">
+
+            <h1 className=' text-gray-900 title-font font-medium pb-2'>
+                {data.title}
+            </h1>
+
+            <p className=' text-gray-900 title-font font-medium pb-2'>
+                {data.content}
+            </p>
+
+            <p className=' text-gray-900 title-font font-medium pb-2'>
+                {data.author}
+            </p>
         </div>
-
-        <style jsx>
-        {`
-            .container {
-                max-width: 800px;
-                margin: 0 auto;
+        <div className='w-1/3'>
+            {
+                checkUser && (
+                    <div className="flex flex-col">
+                        <button
+                        onClick={editBlog}
+                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                            Edit
+                        </button>
+                        <button 
+                        onClick={deleteBlog}
+                        className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+                            Delete
+                        </button>
+                    </div>
+                )
             }
-
-        `}
-        </style>
-
-        </>
+        </div>
+      </div>
     )
 }
 
-export const getStaticPaths: GetStaticPaths = async () => {
-    const blogs = await new PrismaClient().post.findMany()
-    
-    const paths = blogs.map((blog) => ({
-        params: { slug: blog.id.toString() },
-    }))
-    
-    return { paths, fallback: false }
-}
 
-type Params = {
-    slug: string
-}
-
-export const getStaticProps: GetStaticProps = async ({ params }) => {
-
-    const { slug } = params as Params
-
-    const blog = await new PrismaClient().post.findFirst({
-        where: {
-            id: slug,
-        },
-    })
-
-    return { props: { blog } }
-}

@@ -2,7 +2,7 @@
 import React from 'react'
 import CustomLink from './CustomLink'
 import { useUser } from '@auth0/nextjs-auth0/client';
-import UserDropDown from './UserDropDown';
+import {UserDropDown} from './index';
 
 const links = [
     {

@@ -15,7 +15,7 @@ type Props = {
     btn: any,
 }
 
-const Card = ({ posts, btn}: Props) => {
+const CardAdmin = ({ posts, btn}: Props) => {
     const [learnMore, setLearnMore] = React.useState(false); // [1
   
     const handleMore = () => {
@@ -24,11 +24,24 @@ const Card = ({ posts, btn}: Props) => {
 
     
     return posts.map((post) => {
-      if(post.published === true) {
         return (
-          <div className="p-4 md:w-1/3" key={post.id}>
+          <div className="p-4 md:w-1/3
+          " key={post.id}>
                
-               <div className="shadow-lg h-full border-2 border-gray-200 border-opacity-60 rounded-lg overflow-hidden">
+               <div className="h-full border-2 border-gray-200 border-opacity-60 rounded-lg overflow-hidden 
+                shadow-lg
+               ">
+                {
+                    post.published ? (
+                        <div className="flex justify-center py-2">
+                            <p className="bg-green-500 text-white px-2 py-1 rounded-full">Published</p>
+                        </div>
+                    ) : (
+                        <div className="flex justify-center py-2">
+                            <p className="bg-red-500 text-white px-2 py-1 rounded-full">Not Published</p>
+                        </div>
+                    )
+                }
                  <CustomLink
                    href={`/blog/${post.id}`}
                    >
@@ -69,10 +82,8 @@ const Card = ({ posts, btn}: Props) => {
          </div>
     
         ) 
-      } else {
-        return null
-      }
+     
     })
 }
 
-export default Card
+export default CardAdmin

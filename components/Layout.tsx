@@ -7,9 +7,13 @@ type Props = {
 
 const Layout = ({ children }: Props) => {
   return (
-    <div>
+    <div 
+    className='
+      bg-gray-100 font-sans leading-normal tracking-normal flex flex-col min-h-screen
+    '
+    >
       <Navbar />
-        <main className='container mx-auto h-screen'>
+        <main className='container mx-auto min-h-screen'>
           {children}
         </main>
       <Footer />

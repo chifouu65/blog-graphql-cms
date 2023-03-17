@@ -12,8 +12,6 @@ const Home: NextPage = () => {
     const res = await fetch('/api/blog/posts')
     const data = await res.json()
     setPosts(data)
-
-    console.log(data)
   }
 
   useEffect(() => {
@@ -26,8 +24,7 @@ const Home: NextPage = () => {
             <title>Create Next App</title>
             <link rel="icon" href="/favicon.ico" />
         </Head>
-        <div className="container grid
-            grid-cols-1 gap-6 px-6 py-8 mx-auto sm:grid-cols-2 lg:grid-cols-3"> 
+        <div className="flex flex-wrap -m-4"> 
             <Card posts={posts} />
         </div>
     </>

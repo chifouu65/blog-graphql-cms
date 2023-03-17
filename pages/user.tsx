@@ -4,18 +4,47 @@
 import React from 'react';
 import { withPageAuthRequired } from '@auth0/nextjs-auth0/client';
 import Modal from '../components/Modal';
+import Form from '../components/Form';
+import { CustomLink } from '../components';
 
-export default withPageAuthRequired(function Profile({ user }) {
+type Props = {
+  user: any,
+}
+
+export default withPageAuthRequired(function Profile({ user })   {
   const [isOpen, setIsOpen] = React.useState(false);
+  const [posts, setPosts] = React.useState([]);
+  const [filteredPosts, setFilteredPosts] = React.useState([]); // [1]
+  const [learnMore, setLearnMore] = React.useState(false); // [1
+  
+
+  const handleMore = () => {
+    setLearnMore(!learnMore);
+  }
+  const getPosts = async () => {
+    //filter posts by authorId
+    const res = await fetch('/api/blog/posts')
+    if (res.status === 200) {
+      const data = await res.json()
+      setPosts(data)
+    } else {
+      console.log('error')
+    }
+  } 
 
   const handleOpenCreatePostModal = () => {
     setIsOpen(!isOpen);
   }
 
-  const handleSubmit = (e: any) => {
-    e.preventDefault();
-    console.log('submit');
-  }
+  React.useEffect(() => {
+    getPosts()
+  }, [user])
+
+  React.useEffect(() => {
+    const userSub = user?.sub
+    const filteredPosts = posts.filter((post: any) => post.authorId === userSub)
+    setFilteredPosts(filteredPosts)
+  }, [posts])
 
   return (
     <>
@@ -40,101 +69,81 @@ export default withPageAuthRequired(function Profile({ user }) {
            }
           </div>
         </div>
+      </div>
+      
+      <button 
+          onClick={handleOpenCreatePostModal}
+          className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+          Ajouter un post
+        </button>
+        
+      {
+        isOpen &&
+        <Modal 
+          title="Ajouter un post"
+          setIsOpen={setIsOpen}
+          isOpen={isOpen}
+          content={
+            <Form/>
+          }
+        >
+        </Modal>
+      }
 
         <>
         <h2 className='pt-4 text-gray-900 title-font font-medium pb-2'>
           Vos posts:
         </h2>
 
-        <button 
-          onClick={handleOpenCreatePostModal}
-          className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
-          Ajouter un post
-        </button>
-
-      { isOpen && 
-      <Modal isOpen={isOpen} setIsOpen={setIsOpen} 
-        title="Create a new post"
-        content=
+        <div className="flex flex-wrap -m-4">
           {
-            <>
-              <form onSubmit={handleSubmit} className="flex flex-col gap-2">
-                <div className="flex flex-row gap-2 items-center">
-                  <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                    Title
-                  </label>
-                  <input type="text" className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Post title..." />
-                </div>
-                <div className="flex flex-row gap-2 items-center">
-                  <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                    Category
-                  </label>
-                  <select className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                    <option>Category 1</option>
-                    <option>Category 2</option>
-                    <option>Category 3</option>
-                    <option>Category 4</option>
-                  </select>
-                </div>
-                <div className="flex flex-col">
-                  <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                    Description
-                  </label>
-                  <textarea rows="4" className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Post description...">
-                  </textarea>
-                </div>
-                <div>
-                  <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Upload file</label>
-                  <input type="file"/>
-                  <div className="mt-1 text-sm text-gray-500 dark:text-gray-300" id="user_avatar_help">
-                    PNG, JPG, GIF up to 10MB
-                  </div>
-                </div>
-              </form>
-            </>
-          }
-          btn={
-            <>
-              <button
-              onSubmit={handleSubmit}
-              data-modal-hide="defaultModal" type="button" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                Finish and publish
-              </button>
-              <button 
-              onClick={handleOpenCreatePostModal}
-              data-modal-hide="defaultModal" type="button" className="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">
-                Cancel and close
-              </button>
-            </>
-          }
-      /> 
-      }
-
-        <div className="container grid grid-cols-1 gap-4">
-          <div className="bg-white rounded-lg shadow-lg p-4">
-            <div className="flex flex-col">
-              <div className="flex justify-between">
-                <h2 className=' text-gray-900 title-font font-medium pb-2'>
-                  Titre du post
-                </h2>
-                <div className="flex flex-row gap-2">
-                  <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                    Modifier
-                  </button>
-                  <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
-                    Supprimer
-                  </button>
-                </div>
+            filteredPosts.map((post: any) => (
+              <div className="p-4 md:w-1/3">
+               
+                    <div className="h-full border-2 border-gray-200 border-opacity-60 rounded-lg overflow-hidden">
+                      <CustomLink
+                        href={`/blog/${post.id}`}
+                        >
+                          <img className="lg:h-48 md:h-36 w-full object-cover object-center" src="https://dummyimage.com/720x400" alt="blog" />
+                      </CustomLink>
+                        <div className="p-6">
+                          <h2 className="tracking-widest text-xs title-font font-medium text-gray-400 mb-1">{post.author}</h2>
+                          <h1 className="title-font text-lg font-medium text-gray-900 mb-3">{post.title}</h1>
+                          <p className="leading-relaxed mb-3">
+                            {
+                              learnMore ? post.content : post.content.substring(0, 100) + '...'
+                            }
+                          </p>
+                          <div className="flex items-center flex-wrap ">
+                          {
+                            post.content.length > 100 && <button onClick={handleMore} className="text-indigo-500 inline-flex items-center md:mb-2 lg:mb-0">Learn more
+                              <svg className="w-4 h-4 ml-2" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M5 12h14"></path>
+                                <path d="M12 5l7 7-7 7"></path>
+                              </svg>
+                            </button>
+                          }
+                            <button className="text-gray-400 mr-3 inline-flex items-center lg:ml-auto md:ml-0 ml-auto leading-none text-sm pr-3 py-1 border-r-2 border-gray-200">
+                              <svg className="w-4 h-4 mr-1" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+                                <path d="M22 11.08V12a10 10 0 11-5.93-9.14"></path>
+                                <path d="M22 4L12 14.01l-3-3"></path>
+                              </svg>1.2K
+                            </button>
+                            <button className="text-gray-400 inline-flex items-center leading-none text-sm">
+                              <svg className="w-4 h-4 mr-1" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+                                <path d="M22 11.08V12a10 10 0 11-5.93-9.14"></path>
+                                <path d="M22 4L12 14.01l-3-3"></path>
+                              </svg>6
+                            </button>
+                          </div>
+                        </div>
+                    </div>
               </div>
-              <p className="text-gray-600 text-sm pt-2 max-w-lg">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
-                    euismod, nisl nec tincidunt luctus, nunc nisl aliquet nunc, et
-              </p>
-            </div>
-          </div>
-        </ div>
+            ))
+          }
+        </div>
         </>
-      </div>
+      
     </>
     
   )

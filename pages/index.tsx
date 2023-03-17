@@ -2,26 +2,24 @@ import type { NextPage } from 'next'
 import Head from 'next/head'
 import { Card } from '../components'
 
-const posts = [
-  {
-    by: 'John Doe',
-    id: "1",
-    title: 'My first post',
-    img: "https://images.unsplash.com/photo-1610392347869-1b1b1b1b1b1b?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1050&q=80",
-    content: 'Hello world!',
-    createdAt: new Date(),
-  },
-  {
-      by: 'John Doe',
-      id: "1",
-      title: 'My second post',
-      img: "https://images.unsplash.com/photo-1610392347869-1b1b1b1b1b1b?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1050&q=80",
-      content: 'Hello guys!',
-      createdAt: new Date(),
-  }
-]
+import { useEffect, useState } from 'react'
 
 const Home: NextPage = () => {
+
+  const [posts, setPosts] = useState([])
+
+  const getPosts = async () => {
+    const res = await fetch('/api/blog/posts')
+    const data = await res.json()
+    setPosts(data)
+
+    console.log(data)
+  }
+
+  useEffect(() => {
+    getPosts()
+  }, [])
+
   return (
     <>
          <Head>

@@ -6,6 +6,7 @@ A Faire:
   ☐ Add Categories to BlogPost
   ☐ Add Likes to BlogPost
   ☐ Add Best of to BlogPost In Home Page
+  ☐ Ajouter les user crée a la db (ajouter le schema user), ensuite add modif du compte de la db
 
 Fini:
   ☑ Add Create to BlogPost

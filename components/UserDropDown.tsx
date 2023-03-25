@@ -1,7 +1,7 @@
 import React from 'react';
 import CustomLink from './CustomLink';
 import {FaUserCircle} from 'react-icons/fa'
-
+import profile from '../public/profile.png'
 type user = {
     email: string;
     name: string;
@@ -26,7 +26,7 @@ const UserDropDown = ({ user }: UserDropDownProps) => {
             }
             {
                 user?.picture ? (
-                    <img className="ml-2 w-5 h-5 rounded-full" src={user.picture} alt="" />
+                    <img className="ml-2 w-5 h-5 rounded-full" src={user.picture || profile.src} alt="" />
                 ) : (
                     <FaUserCircle className="ml-2 w-5 h-5 rounded-full" />
                 )

@@ -4,6 +4,7 @@
 import React from 'react';
 import { withPageAuthRequired } from '@auth0/nextjs-auth0/client';
 import {CardAdmin, Modal, Form } from '../components';
+import profile from '../public/profile.png'
 
 export default withPageAuthRequired(function Profile({ user })   {
   const [isOpen, setIsOpen] = React.useState(false);
@@ -43,7 +44,9 @@ export default withPageAuthRequired(function Profile({ user })   {
     <>
       <div className="container">
         <div className="flex flex-col">
-          <img className='rounded-full h-10 w-10' src={user.picture as string} alt={user.name as string} />
+          <img className='rounded-full h-10 w-10' src={user.picture as string ||
+            profile.src
+          } alt={user.name as string} />
           <div className="flex flex-col">
             {
               user.name && <h2 className=' text-gray-900 title-font font-medium pb-2'>
@@ -76,10 +79,8 @@ export default withPageAuthRequired(function Profile({ user })   {
           title="Ajouter un post"
           setIsOpen={setIsOpen}
           isOpen={isOpen}
-          content={
+          >
             <Form/>
-          }
-        >
         </Modal>
       }
         <>

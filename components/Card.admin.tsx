@@ -1,5 +1,4 @@
 import CustomLink from "./CustomLink"
-import {AiOutlineArrowRight} from 'react-icons/ai'
 import React from "react"
 
 type post = {
@@ -11,11 +10,10 @@ type post = {
     published: boolean,
 }
 type Props = {
-    posts: post[],
-    btn: any,
+    posts: post[]
 }
 
-const CardAdmin = ({ posts, btn}: Props) => {
+const CardAdmin = ({ posts }: Props)  => {
     const [learnMore, setLearnMore] = React.useState(false); // [1
   
     const handleMore = () => {

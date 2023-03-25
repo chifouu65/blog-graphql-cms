@@ -10,11 +10,7 @@ export default async( req: NextApiRequest,
     res: NextApiResponse<Data>) => {
 
         //get all posts
-    if (req.method === 'GET') {
-        const posts = await prisma.post.findMany();
-        res.status(200).json(posts as any);
-        //create a post
-    } else if (req.method === 'POST') {
+   if (req.method === 'POST') {
         console.log('POST');
         const post = await prisma.post.create({
             data: {
@@ -26,15 +22,9 @@ export default async( req: NextApiRequest,
             },
         });
         res.status(200).json(post as any);
-        //get a post by id
-    }  else if (req.method === 'ded') {
-        const post = await prisma.post.findUnique({
-            where: {
-                id: req.body.id,
-            },
-        });
-        res.status(200).json(post as any);
-        //update a post
+        //get a post by i
+    } else {
+        res.status(405).json('Method not allowed' as any);
     }
 }
 

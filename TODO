@@ -6,7 +6,11 @@ A Faire:
   ☐ Add Categories to BlogPost
   ☐ Add Likes to BlogPost
   ☐ Add Best of to BlogPost In Home Page
+<<<<<<< Updated upstream
   ☐ Ajouter les user crée a la db (ajouter le schema user), ensuite add modif du compte de la db
+=======
+  ☐ Add verification de l'id de l'utilisateur pour les actions (Edit, Delete)
+>>>>>>> Stashed changes
 
 Fini:
   ☑ Add Create to BlogPost

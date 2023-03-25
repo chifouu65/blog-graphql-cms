@@ -11,21 +11,20 @@ export default function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ){
-  const id = req?.body.idToDelete;
-  console.log(id);
-  if (id) {
-    prisma.post.delete({
+  if (req.method === 'POST') {
+    console.log(
+      `Deleting post with id: ${req.body.id}`
+    );
+    prisma.post.deleteMany({
       where: {
-        id: id,
+        id: req.body.id,
       },
     })
     .then((data) => {
-        res.status(200).json(data as any);
+      res.status(200).json(data as any);
     })
     .catch((err) => {
-        res.status(500).json(err as any);
+      res.status(500).json(err as any);
     });
-  } else {
-    res.status(405).json('Method not allowed' as any);
   }
 }

@@ -3,11 +3,11 @@ import {AiOutlineClose} from 'react-icons/ai'
 type ModalProps = {
     isOpen: boolean;
     setIsOpen: (isOpen: boolean) => void;
-    content: JSX.Element;
+    children: JSX.Element;
     title: string;
 }
 
-function Modal({isOpen, setIsOpen, content,title}: ModalProps) {
+function Modal({isOpen, setIsOpen, children,title}: ModalProps) {
     return (
         <>
             <div className="fixed top-10 z-50 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)]">
@@ -25,7 +25,7 @@ function Modal({isOpen, setIsOpen, content,title}: ModalProps) {
                             </button>
                         </div>
                         <div className="p-6 space-y-6">
-                            {content}
+                            {children}
                         </div>
                     </div>
                 </div>
